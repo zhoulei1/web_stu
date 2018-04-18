@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript"  src="js/jquery-3.3.1.min.js"></script>
+</head>
+<!-- Jquery files -->
+<script type="text/javascript">
+$(function(){
+    $.post(
+            "/data",
+            {
+                name : $("#id2").val()
+
+            },
+            function(data){
+            	$("#id1").val(data.name)
+            }, "json"
+        );
+    $("#bu").click(function(){
+        $.post(
+                "/data",
+                {
+                    name : $("#id2").val()
+
+                },
+                function(data){
+                	$("#id1").val(data.name)
+                }, "json"
+            );
+    });
+});
+</script>   
+<body>
+<input id="id1" value="张三"/>:你好
+<br/>
+<button id="bu">say hi to</button> <input id="id2" value="zhangsan"/>
+</body>
+</html>
