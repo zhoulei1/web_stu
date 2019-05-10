@@ -65,6 +65,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>web01</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
