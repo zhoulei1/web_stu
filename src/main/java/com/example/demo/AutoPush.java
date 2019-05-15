@@ -94,7 +94,7 @@ public class AutoPush {
     	if (releaseType == 1) {
     		return releaseByVersion(info,version);
     	} else if (releaseType == 2){
-    		return releaseByInstallPackage(installPackage,info.getPlatform(),ReleaseInfoConfig.parseVersion(installPackage));
+    		return releaseByInstallPackage(installPackage,ReleaseInfoConfig.parseVersion(installPackage),info.getPlatform());
     	} else {
     		//TODO
     		return ResponseData.fail("暂时不支持此方式发布");
@@ -117,7 +117,7 @@ public class AutoPush {
 	private ResponseData releaseByVersion(ReleaseInfoConfig info,String version) {
     	if (releaseInfo.getType() == ReleaseInfoType.rpm.getType()) {
     		String installPackage = releaseInfo.parseInstallPackage(version);
-    		return releaseByInstallPackage(installPackage,info.getPlatform(),version);
+    		return releaseByInstallPackage(installPackage,version,info.getPlatform());
     	}else {
     		//TODO  exe || pkg
     		return ResponseData.fail("暂时不支持此类型发布");
