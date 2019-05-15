@@ -64,8 +64,8 @@ public class AutoPush {
     	if (releaseInfo.getType() == ReleaseInfoType.rpm.getType()) {
     		List<String>  command = new ArrayList<String>();
     		command.add(RPM_LIST_SHELL);
-    		command.add(String.format("%s '%s'", SHELL_PARAM_PACKAGE,installPackagePrefix));
-    		command.add(String.format("%s '%s'", SHELL_PARAM_DIR,releaseInfo.getDir()));
+    		command.add(String.format("%s %s", SHELL_PARAM_PACKAGE,installPackagePrefix));
+    		command.add(String.format("%s %s", SHELL_PARAM_DIR,releaseInfo.getDir()));
     		List<String> execList = execList(command);
     		return execList.stream().filter(c->c.startsWith(installPackagePrefix)).map(c->{
     			InstallPackageInfo i = new InstallPackageInfo();
@@ -109,9 +109,9 @@ public class AutoPush {
 		}
 		List<String>  command = new ArrayList<String>();
 		command.add(RPM_SHELL);
-		command.add(String.format("%s '%s'", SHELL_PARAM_PACKAGE,installPackage));
-		command.add(String.format("%s '%s'", SHELL_PARAM_PLATFORM,platform));
-		command.add(String.format("%s '%s'", SHELL_PARAM_VERSION,version));
+		command.add(String.format("%s %s", SHELL_PARAM_PACKAGE,installPackage));
+		command.add(String.format("%s %s", SHELL_PARAM_PLATFORM,platform));
+		command.add(String.format("%s %s", SHELL_PARAM_VERSION,version));
 		ResponseData exec = exec(command);
 		return exec;
 	}
