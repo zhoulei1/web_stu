@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,11 +22,11 @@ import com.example.demo.model.ResponseData;
 @RestController
 @RequestMapping("/api/rest")
 public class AutoPush {
-	
-	private static final String SHELL_PARAM_PACKAGE="-r ";
-	private static final String SHELL_PARAM_VERSION="-v ";
-	private static final String SHELL_PARAM_PLATFORM="-p ";
-	private static final String SHELL_PARAM_DIR="-d ";
+	Logger logger=LoggerFactory.getLogger(AutoPush.class);
+	private static final String SHELL_PARAM_PACKAGE="-r";
+	private static final String SHELL_PARAM_VERSION="-v";
+	private static final String SHELL_PARAM_PLATFORM="-p";
+	private static final String SHELL_PARAM_DIR="-d";
 	
 	private String RPM_SHELL="/usr/bin/zl.sh";
 	
@@ -62,8 +64,8 @@ public class AutoPush {
     	if (releaseInfo.getType() == ReleaseInfoType.rpm.getType()) {
     		List<String>  command = new ArrayList<String>();
     		command.add(RPM_LIST_SHELL);
-    		command.add(SHELL_PARAM_PACKAGE+ installPackagePrefix);
-    		command.add(SHELL_PARAM_DIR+ releaseInfo.getDir());
+    		command.add(String.format("%s '%s'", SHELL_PARAM_PACKAGE,installPackagePrefix));
+    		command.add(String.format("%s '%s'", SHELL_PARAM_DIR,releaseInfo.getDir()));
     		List<String> execList = execList(command);
     		return execList.stream().filter(c->c.startsWith(installPackagePrefix)).map(c->{
     			InstallPackageInfo i = new InstallPackageInfo();
@@ -107,9 +109,9 @@ public class AutoPush {
 		}
 		List<String>  command = new ArrayList<String>();
 		command.add(RPM_SHELL);
-		command.add(SHELL_PARAM_PACKAGE+ installPackage);
-		command.add(SHELL_PARAM_PLATFORM+ platform);
-		command.add(SHELL_PARAM_VERSION+ version);
+		command.add(String.format("%s '%s'", SHELL_PARAM_PACKAGE,installPackage));
+		command.add(String.format("%s '%s'", SHELL_PARAM_PLATFORM,platform));
+		command.add(String.format("%s '%s'", SHELL_PARAM_VERSION,version));
 		ResponseData exec = exec(command);
 		return exec;
 	}
@@ -130,16 +132,13 @@ public class AutoPush {
 		BufferedReader br = null;
 		 List<String> list = new ArrayList<String>();
 		try {
+			logger.info("vcs exc shell command:" + StringUtils.join(command, " "));
 			Process pro = pb.start();
-			runningStatus = pro.waitFor();
-			if (runningStatus != 0) {
-				return list;
-			}
-
 			br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
 			String line;
 			boolean startRecord=false;
 			while ((line = br.readLine()) != null) {
+				logger.info(line);
 				if (line.startsWith(SHELL_RECORD_BEGIN)) {
 					startRecord=true;
 				} else if(line.startsWith(SHELL_RECORD_END)) {
@@ -149,6 +148,12 @@ public class AutoPush {
 					list.add(line);
 				}
 			}
+			runningStatus = pro.waitFor();
+			if (runningStatus != 0) {
+				logger.info(runningStatus+"");
+				return list;
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -172,23 +177,26 @@ public class AutoPush {
 		String result="操作失败";
 		
 		try {
+			logger.info("vcs exc shell command:" + StringUtils.join(command, " "));
 			Process pro = pb.start();
-			runningStatus = pro.waitFor();
-			if (runningStatus != 0) {
-				return ResponseData.fail("Failed to release");
-			}
-
 			br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
 			//StringBuffer strbr = new StringBuffer();
 			String line;
 			boolean execResult=false;
 			while ((line = br.readLine()) != null) {
+				logger.info(line);
 				//strbr.append(line).append("\n");
 				if (line.startsWith(SHELL_SUCCESS_END_PREFIX)) {
 					execResult=true;
 					break;
 				}
 			}
+			runningStatus = pro.waitFor();
+			if (runningStatus != 0) {
+				System.out.println(runningStatus);
+				return ResponseData.fail("Failed to release");
+			}
+
 			
 			if (execResult) {
 				return ResponseData.success("操作成功");
