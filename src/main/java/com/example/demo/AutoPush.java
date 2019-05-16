@@ -63,6 +63,7 @@ public class AutoPush {
     	if (StringUtils.isEmpty(installPackagePrefix)) return Collections.emptyList();
     	if (releaseInfo.getType() == ReleaseInfoType.rpm.getType()) {
     		List<String>  command = new ArrayList<String>();
+    		command.add(RPM_LIST_SHELL);
     		command.add(SHELL_PARAM_PACKAGE);
     		command.add(installPackagePrefix);
     		command.add(SHELL_PARAM_DIR);
