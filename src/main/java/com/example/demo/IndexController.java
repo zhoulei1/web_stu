@@ -51,4 +51,15 @@ public class IndexController {
         }
         return new JSONObject();
     }
+    @RequestMapping("/l")
+    @ResponseBody
+    public JSONObject l() {
+        JSONObject j = new JSONObject();
+            j.put("mlength",m.size());
+            j.put("m1length",m1.size());
+        return j;
+    }
+    public static void main(String[] args){
+        System.out.println(UUID.randomUUID().toString().length());
+    }
 }
