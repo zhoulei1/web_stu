@@ -1,6 +1,13 @@
 package com.example.demo;
 
-import com.example.demo.model.ResponseData;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -8,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.*;
+import com.example.demo.model.ResponseData;
 
 
 @Controller
 public class IndexController {
     public final  Map<Integer,String> m=new HashMap<>();
     public final List<ResponseData> m1=new ArrayList<>();
+    
     @RequestMapping(value = {"/jsp"})
     public String indexJsp(Model model) {
     	  model.addAttribute("name", "张三");
@@ -59,7 +66,30 @@ public class IndexController {
             j.put("m1length",m1.size());
         return j;
     }
-    public static void main(String[] args){
-        System.out.println(UUID.randomUUID().toString().length());
+	private final ExecutorService pool = Executors.newFixedThreadPool(1);
+	private final ExecutorService pool2 = Executors.newFixedThreadPool(1);
+	
+    @RequestMapping("/pool1")
+    @ResponseBody
+    public JSONObject pool1() {
+		pool.submit(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("doing something");
+			}
+		});
+        return new JSONObject();
     }
+    @RequestMapping("/pool2")
+    @ResponseBody
+    public JSONObject pool2() {
+    	pool2.submit(new Runnable() {
+    		@Override
+    		public void run() {
+    			int i=1/0;
+    		}
+    	});
+    	return new JSONObject();
+    }
+	
 }
