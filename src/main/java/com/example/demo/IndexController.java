@@ -8,6 +8,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -20,6 +22,7 @@ import com.example.demo.model.ResponseData;
 
 @Controller
 public class IndexController {
+	 private static final Logger logger = LogManager.getLogger(IndexController.class);
     public final  Map<Integer,String> m=new HashMap<>();
     public final List<ResponseData> m1=new ArrayList<>();
     
@@ -82,14 +85,14 @@ public class IndexController {
     }
     @RequestMapping("/pool2")
     @ResponseBody
-    public JSONObject pool2() {
+    public JSONObject pool2(String num) {
     	pool2.submit(new Runnable() {
     		@Override
     		public void run() {
-    			int i=1/0;
+    			logger.info(num);
+    			int i=Integer.parseInt(num);
     		}
     	});
     	return new JSONObject();
     }
-	
 }

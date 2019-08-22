@@ -94,13 +94,14 @@
 	</appender>
 
 	<!--自定义logger name为包名 -->
-	<!-- <logger name="com.sc.privatecloud.web.LogTestController" level="INFO" 
+<!-- 	<logger name="com.sc.privatecloud.web.LogTestController" level="INFO" 
 		additivity="false"> <appender-ref ref="CONSOLE"/> </logger> -->
 
 	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
+	<!-- 	<appender-ref ref="CONSOLE" /> -->
+		<appender-ref ref="INFO" />
 <!-- 		<appender-ref ref="ERROR" />
-		<appender-ref ref="INFO" /> -->
+		 -->
 	</root>
 
 </configuration>
